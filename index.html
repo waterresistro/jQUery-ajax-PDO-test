@@ -1,0 +1,69 @@
+<!doctype html>
+
+<!--
+	Purpose: practicing jQuery, ajax and database connection with PDO.
+
+	Date: Mai 2017
+-->
+<html>
+<head>
+	<meta charset='utf8'>
+	<title>Test 1 ajax</title>
+	<script src='jquery-3.1.1.min.js'></script>	
+	
+		
+</head>
+
+
+<body>
+	<p>	
+		Press the button to show/hide the form.
+	</p>
+	<input type='button' id='aff_form_btn' value='Show form'/>
+	
+	
+	
+	<script>
+		//click on the Show/Hide form button
+			$('#aff_form_btn').click(function(){
+				console.log('show/hide event');		//some feedback
+				$button = $('#aff_form_btn');
+				//adding extra data named 'pressed' that shows if the button was pressed or not
+				if($button.data('pressed') !== true){
+					$.get('formular.html')
+						.done(function(data){
+							//modifying the button's text
+							$button.attr('value', 'Hide form');
+							//adding extra data named 'pressed' that indicates the button was pressed(so the form is shown)
+							$button.data('pressed', true);
+							$('#aff_form_btn').after(data);
+							});
+				}else{
+					
+						$('#enreg_form').remove();
+						//adding extra data named 'pressed' that indicates the button was pressed a second time(so the form is hidden)
+						$button.data('pressed', false);
+						//modifying the button's text
+						$button.attr('value', 'Show form');
+				}
+				
+			});
+			
+		//sending form data to be inserted into the database
+			$('body').on("submit", '#enreg_form', function(event){
+				console.log('submit event');		//some feedback
+				event.preventDefault();
+				//serializing the form's data and adding another field used by php to select proper action(method)
+				var extraData = $('#enreg_form').serializeArray();
+				extraData.push({name:'action', value: 'write'});
+				$.post('controller.php', extraData)
+				.done(function(response){
+						console.log(response);
+				})
+				.fail(function(){
+						alert('Error saving data')
+				});
+			});
+	</script>
+</body>
+</html>
