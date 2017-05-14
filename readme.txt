@@ -1,0 +1,1 @@
+Just testing some jQuery, ajax and PDO functionality.
